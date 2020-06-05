@@ -1,5 +1,6 @@
 package de.ybroeker.mp.openapi.maven;
 
+import static io.smallrye.openapi.runtime.io.OpenApiSerializer.Format.JSON;
 import static io.smallrye.openapi.runtime.io.OpenApiSerializer.Format.YAML;
 
 import java.io.File;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,8 +44,25 @@ import io.smallrye.openapi.runtime.io.OpenApiSerializer;
         requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME)
 public class GenerateOpenApiMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project.build.directory}/generated/openapi.yaml", property = "destination")
-    private String destination;
+    static enum OutputFormat {
+        JSON, YAML, JSON_AND_YAML;
+
+        boolean isJson() {
+            return this != YAML;
+        }
+
+        boolean isYaml() {
+            return this != JSON;
+        }
+
+    }
+
+    @Parameter(defaultValue = "openapi", property = "outputFileName")
+    private String outputFileName;
+    @Parameter(defaultValue = "YAML", property = "outputFormat")
+    private OutputFormat outputFormat;
+    @Parameter(defaultValue = "${project.build.directory}/generated", property = "outputPath")
+    private String outputPath;
 
     @Parameter(defaultValue = "false", property = "includeDependencies")
     private boolean includeDependencies;
@@ -56,6 +75,7 @@ public class GenerateOpenApiMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}")
     private MavenProject mavenProject;
+
 
     /**
      * Compiled classes of the project.
@@ -154,13 +174,19 @@ public class GenerateOpenApiMojo extends AbstractMojo {
 
     private void write(OpenAPI openApi) throws MojoExecutionException {
         try {
-            if (destination == null || destination.isEmpty()) {
-                getLog().info(OpenApiSerializer.serialize(openApi, YAML));
-            } else {
-                Path path = new File(destination).toPath();
-                Files.createDirectories(path.getParent());
-                Files.write(path, Collections.singleton(OpenApiSerializer.serialize(openApi, YAML)));
-                getLog().info("Wrote the schema to " + path.toAbsolutePath().toString());
+            Path destinationPath = Paths.get(outputPath);
+            Files.createDirectories(destinationPath);
+
+            if (outputFormat.isJson()) {
+                Path file = destinationPath.resolve(outputFileName + ".json");
+                Files.write(file, Collections.singleton(OpenApiSerializer.serialize(openApi, JSON)));
+                getLog().info("Wrote the schema to " + file.toAbsolutePath().toString());
+            }
+
+            if (outputFormat.isYaml()) {
+                Path file = destinationPath.resolve(outputFileName + ".yaml");
+                Files.write(file, Collections.singleton(OpenApiSerializer.serialize(openApi, YAML)));
+                getLog().info("Wrote the schema to " + file.toAbsolutePath().toString());
             }
         } catch (IOException e) {
             throw new MojoExecutionException("Can't write the result", e);
