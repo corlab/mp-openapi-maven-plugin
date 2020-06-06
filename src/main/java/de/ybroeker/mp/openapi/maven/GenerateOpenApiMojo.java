@@ -76,6 +76,10 @@ public class GenerateOpenApiMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project}")
     private MavenProject mavenProject;
 
+    @Parameter(property = "config")
+    private MavenConfig config;
+
+
 
     /**
      * Compiled classes of the project.
@@ -149,27 +153,7 @@ public class GenerateOpenApiMojo extends AbstractMojo {
     }
 
     private OpenAPI generateSchema(IndexView index) {
-        return OpenApiProcessor.modelFromAnnotations(new OpenApiConfigImpl(new Config() {
-            @Override
-            public <T> T getValue(String propertyName, Class<T> propertyType) {
-                return null;
-            }
-
-            @Override
-            public <T> Optional<T> getOptionalValue(String propertyName, Class<T> propertyType) {
-                return Optional.empty();
-            }
-
-            @Override
-            public Iterable<String> getPropertyNames() {
-                return Collections.emptyList();
-            }
-
-            @Override
-            public Iterable<ConfigSource> getConfigSources() {
-                return Collections.emptyList();
-            }
-        }), index);
+        return OpenApiProcessor.modelFromAnnotations(config, index);
     }
 
     private void write(OpenAPI openApi) throws MojoExecutionException {
