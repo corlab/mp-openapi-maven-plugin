@@ -69,12 +69,12 @@
         <repository>
             <id>github</id>
             <name>CIT-EC GitHub Repository</name>
-            <url>https://maven.pkg.github.com/corlab/aware-parent</url>
+            <url>https://maven.pkg.github.com/corlab/mp-openapi-maven-plugin</url>
         </repository>
         <snapshotRepository>
             <id>github</id>
             <name>CIT-EC GitHub Snapshot Repository</name>
-            <url>https://maven.pkg.github.com/corlab/aware-parent</url>
+            <url>https://maven.pkg.github.com/corlab/mp-openapi-maven-plugin</url>
         </snapshotRepository>
     </distributionManagement>
 
