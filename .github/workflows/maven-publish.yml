@@ -57,3 +57,8 @@ jobs:
       run: ./mvnw deploy -s ~/.m2/settings.xml
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
+
+    - name: Release to GitHub Packages Apache Maven
+      run: ./mvnw release:prepare release:perform -s ~/.m2/settings.xml
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
