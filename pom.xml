@@ -11,7 +11,7 @@
     <version>1.2.1-SNAPSHOT</version>
 
     <scm>
-        <developerConnection>scm:git:https://github.com/ybroeker/mp-openapi-maven-plugin.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/corlab/mp-openapi-maven-plugin.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
