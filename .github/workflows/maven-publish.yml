@@ -11,13 +11,15 @@ on:
   release:
     types: [created]
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
 
     runs-on: aware
-    permissions:
-      contents: read
-      packages: write
+
 
     steps:
     - uses: actions/checkout@v4
@@ -58,7 +60,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.PAT }}
 
-    - name: Release to GitHub Packages Apache Maven
-      run: ./mvnw release:prepare release:perform -s ~/.m2/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
+    - name: Release
+        if: ${{ github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, '[maven-release-plugin]') }}
+        run: ./mvnw -X -B -s ~/.m2/settings.xml release:prepare release:perform
