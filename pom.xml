@@ -6,11 +6,11 @@
     <groupId>de.ybroeker</groupId>
     <artifactId>mp-openapi-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <version>1.2.1</version>
+    <version>1.2.2-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:https://github.com/corlab/mp-openapi-maven-plugin.git</developerConnection>
-        <tag>mp-openapi-maven-plugin-1.2.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
